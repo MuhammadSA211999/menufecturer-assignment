@@ -222,7 +222,7 @@ async function run() {
             })
             res.send({ clientSecret: paymentIntent.client_secret })
         });
-
+        // payment done 
         app.patch('/product/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const payment = req.body;
