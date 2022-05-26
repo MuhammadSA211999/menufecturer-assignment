@@ -61,7 +61,7 @@ async function run() {
             res.send(result)
         });
 
-
+        // all parts 
         app.get('/homepage', async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
