@@ -210,7 +210,7 @@ async function run() {
             res.send(product);
         });
 
-        // PAYMENT GATEWAY
+        // payment method 
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const product = req.body;
             const price = product.price;
