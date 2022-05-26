@@ -103,7 +103,7 @@ async function run() {
             res.send(result);
         });
 
-
+        // application orders 
         app.get('/orders', verifyJWT, async (req, res) => {
             const email = req.query.email;
             const decodedEmail = req.decoded.email;
