@@ -41,7 +41,7 @@ async function run() {
         const reviewCollection = client.db('manufacturedb').collection('reviews');
         const paymentCollection = client.db('manufacturedb').collection('payments');
         const profileCollection = client.db('manufacturedb').collection('profile');
-
+        // user into admin
         const verifyADMIN = async (req, res, next) => {
             const requester = req.decoded.email;
             const requesterAccount = await userCollection.findOne({ email: requester });
