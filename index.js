@@ -117,7 +117,7 @@ async function run() {
             }
         });
 
-
+        // delete user order 
         app.delete('/orders/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
