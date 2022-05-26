@@ -140,7 +140,7 @@ async function run() {
             const token = jwt.sign({ email: email }, process.env.AUTH_TOKEN, { expiresIn: '1d' })
             res.send({ result, token });
         });
-
+        // dynamic admin 
         app.put('/user/admin/:email', verifyJWT, verifyADMIN, async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
@@ -151,7 +151,7 @@ async function run() {
             res.send(result);
         });
 
-
+        // admin role 
         app.get('/admin/:email', verifyJWT, verifyADMIN, async (req, res) => {
             const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
@@ -159,20 +159,20 @@ async function run() {
             res.send({ admin: isAdmin })
         });
 
-
+        // user prdct with verification 
         app.post('/addproduct', verifyJWT, verifyADMIN, async (req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
             res.send(result);
         });
 
-
+        // application all orders
         app.get('/allorders', verifyJWT, verifyADMIN, async (req, res) => {
             const orders = await orderCollection.find().toArray();
             res.send(orders);
         });
 
-
+        // app product with verification 
         app.get('/manageproducts', verifyJWT, verifyADMIN, async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
@@ -180,14 +180,14 @@ async function run() {
             res.send(result)
         });
 
-
+        // single product manage
         app.delete('/manageproducts/:id', verifyJWT, verifyADMIN, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await productCollection.deleteOne(query);
             res.send(result)
         });
-
+        // single review
         app.post('/review/:id', verifyJWT, async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
