@@ -16,6 +16,7 @@ const uri = `mongodb+srv://${process.env.DB_MENUFECTURER}:${process.env.MENUFECT
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 console.log('mongodb conn');
 
+// check user token  
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -41,6 +42,7 @@ async function run() {
         const reviewCollection = client.db('manufacturedb').collection('reviews');
         const paymentCollection = client.db('manufacturedb').collection('payments');
         const profileCollection = client.db('manufacturedb').collection('profile');
+
         // user into admin
         const verifyADMIN = async (req, res, next) => {
             const requester = req.decoded.email;
