@@ -31,7 +31,7 @@ function verifyJwt(req, res, next) {
         next();
     });
 }
-
+// verify toke 
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
