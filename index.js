@@ -98,6 +98,7 @@ async function run() {
         const orderCollection = client.db('manufacturedb').collection('orders');
         const userCollection = client.db('manufacturedb').collection('users');
 
+        // verife admin 
         const verifyAdmin = async (req, res, next) => {
             const requester = req.decoded.email;
             const requesterAccount = await userCollection.findOne({ email: requester });
@@ -221,9 +222,9 @@ run().catch(console.dir)
 
 
 app.get('/', (req, res) => {
-    res.send('Hello From Doctor Uncle!')
+    res.send(' server home page')
 })
 
 app.listen(port, () => {
-    console.log(`Doctors App listening on port ${port}`)
+    console.log(`server on console log`)
 })
