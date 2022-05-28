@@ -5,7 +5,7 @@ require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 var nodemailer = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
-const stripe = require('stripr')(sk_test_51L0UJcBPKjjPdT676ry4hwsZWQCVlEoUF7IfesLZegp9OaURbWgWXkGIYmc29irn4KrcSpm6CWErBOQAXxVNWrxz00r3023Kvc);
+const stripe = require('stripr')(process.env.STRIPE_KEY);
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -23,7 +23,7 @@ function verifyJWT(req, res, next) {
         return res.status(401).send({ message: 'Unauthorized access' })
     }
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+    jwt.verify(token, process.env.AUTH_TOKEN, function (err, decoded) {
         if (err) {
             return res.status(403).send({ message: 'Forbidden access' })
         }
@@ -38,7 +38,7 @@ function verifyJWT(req, res, next) {
         return res.status(401).send({ message: 'UnAuthorized access' });
     }
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+    jwt.verify(token, process.env.AUTH_TOKEN, function (err, decoded) {
         if (err) {
             return res.status(403).send({ message: 'Forbidden access' })
         }
