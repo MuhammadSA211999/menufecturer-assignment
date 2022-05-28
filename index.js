@@ -12,12 +12,12 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// CONNECT TO MONGO DB
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ey7au.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-console.log('DB connected');
+console.log('menu db connect');
 
-function verifyJwt(req, res, next) {
+function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).send({ message: 'Unauthorized access' })
@@ -55,38 +55,6 @@ const emailSenderOptions = {
 
 const emailClient = nodemailer.createTransport(sgTransport(emailSenderOptions));
 
-function sendAppointmentEmail(booking) {
-    const { patient, patientName, treatment, date, slot } = booking;
-
-    var email = {
-        from: process.env.EMAIL_SENDER,
-        to: patient,
-        subject: `Your Appointment for ${treatment} is on ${date} at ${slot} is Confirmed`,
-        text: `Your Appointment for ${treatment} is on ${date} at ${slot} is Confirmed`,
-        html: `
-      <div>
-        <p> Hello ${patientName}, </p>
-        <h3>Your Appointment for ${treatment} is confirmed</h3>
-        <p>Looking forward to seeing you on ${date} at ${slot}.</p>
-        
-        <h3>Our Address</h3>
-        <p>Andor Killa Bandorban</p>
-        <p>Bangladesh</p>
-        <a href="https://web.programming-hero.com/">unsubscribe</a>
-      </div>
-    `
-    };
-
-    emailClient.sendMail(email, function (err, info) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log('Message sent: ', info);
-        }
-    });
-
-}
 
 
 
@@ -98,7 +66,7 @@ async function run() {
         const orderCollection = client.db('manufacturedb').collection('orders');
         const userCollection = client.db('manufacturedb').collection('users');
 
-        // verife admin 
+
         const verifyAdmin = async (req, res, next) => {
             const requester = req.decoded.email;
             const requesterAccount = await userCollection.findOne({ email: requester });
@@ -110,7 +78,7 @@ async function run() {
             }
         }
 
-        // GET ALL DATA
+
         app.get('/parts', async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
@@ -118,7 +86,7 @@ async function run() {
             res.send(result)
         });
 
-        // GET ITEM BY PRODUCT ID
+
         app.get('/parts/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -126,21 +94,20 @@ async function run() {
             res.send(product);
         });
 
-        // LOAD ALL USERS
-        app.get('/user', verifyJwt, verifyAdmin, async (req, res) => {
+        app.get('/user', verifyJWT, verifyAdmin, async (req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
         });
 
-        // ADD A ORDER
+
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await orderCollection.insertOne(order);
             res.send(result);
         });
 
-        // LOAD A USER ORDER
-        app.get('/orders', verifyJwt, async (req, res) => {
+
+        app.get('/orders', verifyJWT, async (req, res) => {
             const email = req.query.email;
             const decodedEmail = req.decoded.email;
             if (email === decodedEmail) {
@@ -153,15 +120,15 @@ async function run() {
             }
         });
 
-        // DELETE A ORDER
-        app.delete('/orders/:id', verifyJwt, async (req, res) => {
+
+        app.delete('/orders/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await orderCollection.deleteOne(query);
             res.send(result)
         });
 
-        // ADD USERS
+
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
             const user = req.body;
@@ -175,8 +142,8 @@ async function run() {
             res.send({ result, token });
         });
 
-        // MAKE USER AN ADMIN
-        app.put('/user/admin/:email', verifyJwt, verifyAdmin, async (req, res) => {
+
+        app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
             const updateDoc = {
@@ -186,29 +153,29 @@ async function run() {
             res.send(result);
         });
 
-        // FIND ADMIN USER ONLY
-        app.get('/admin/:email', verifyJwt, verifyAdmin, async (req, res) => {
+
+        app.get('/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
             const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin })
         });
 
-        // ADD A PRODUCT
-        app.post('/addproduct', verifyJwt, verifyAdmin, async (req, res) => {
+
+        app.post('/addproduct', verifyJWT, verifyAdmin, async (req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
             res.send(result);
         });
 
-        // MANAGE ALL ORDERS
-        app.get('/allorders', verifyJwt, verifyAdmin, async (req, res) => {
+
+        app.get('/allorders', verifyJWT, verifyAdmin, async (req, res) => {
             const orders = await orderCollection.find().toArray();
             res.send(orders);
         });
 
-        // MANAGE ALL DATA
-        app.get('/manageproducts', verifyJwt, verifyAdmin, async (req, res) => {
+
+        app.get('/manageproducts', verifyJWT, verifyAdmin, async (req, res) => {
             const query = {};
             const cursor = productCollection.find(query);
             const result = await cursor.toArray();
